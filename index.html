@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kwita · Rozliczcie wspólne wydatki w minutę</title>
+  <meta name="description" content="Dopisujcie wspólne wydatki z wyjazdu, a Kwita policzy, kto komu ile oddaje — w jak najmniejszej liczbie przelewów. Bez logowania i bez instalacji." />
+  <meta name="theme-color" content="#14161A" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-in">
+      <a class="logo" href="#top" aria-label="Kwita — strona główna">
+        <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="12" cy="16" r="9" fill="var(--mint)"/><circle cx="20" cy="16" r="9" fill="var(--ink)" fill-opacity=".9"/><path d="M12.5 16.2l2.6 2.6 5-5.2" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>kwita<b>.</b></span>
+      </a>
+      <nav class="nav-links" aria-label="Nawigacja">
+        <a href="#jak">Jak to działa</a>
+        <a class="btn btn-sm" href="#app">Wypróbuj</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-in">
+        <div class="hero-copy">
+          <p class="eyebrow">Wyjazdy · mieszkanie · imprezy</p>
+          <h1>Wspólne wydatki? <span class="hl">Rozliczcie się</span> w&nbsp;minutę.</h1>
+          <p class="lead">Dopisujcie, kto za co zapłacił, a Kwita policzy, kto komu ile oddaje — w jak najmniejszej liczbie przelewów.</p>
+          <div class="hero-cta">
+            <a class="btn" href="#app">Wypróbuj teraz</a>
+            <a class="btn btn-ghost" href="#jak">Jak to działa</a>
+          </div>
+          <ul class="ticks">
+            <li>Bez logowania</li><li>Bez instalacji</li><li>Za darmo</li>
+          </ul>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="mini mini-a">
+            <div class="mini-h">Weekend w Tatrach</div>
+            <div class="mini-row"><i style="background:#FF8A5B">O</i>Paliwo<span>320,00 zł</span></div>
+            <div class="mini-row"><i style="background:#5B8CFF">K</i>Nocleg<span>1 200,00 zł</span></div>
+            <div class="mini-row"><i style="background:#B57BFF">Z</i>Kolacja<span>412,00 zł</span></div>
+          </div>
+          <div class="mini mini-b">
+            <div class="mini-h">Do oddania</div>
+            <div class="mini-t"><b>Ola</b><svg width="34" height="12" viewBox="0 0 34 12"><path d="M1 6h30M26 1l5 5-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg><b>Kuba</b><span>234,60 zł</span></div>
+            <div class="mini-done">Jesteście kwita ✓</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="app" class="app-sec">
+      <div class="wrap">
+        <div class="app-head">
+          <div>
+            <p class="eyebrow">Twoje rozliczenie</p>
+            <input id="trip" class="trip" value="Weekend w Tatrach" aria-label="Nazwa rozliczenia" maxlength="40" />
+          </div>
+          <div class="app-tools">
+            <button class="btn btn-ghost btn-sm" id="loadDemo" type="button">Wczytaj przykład</button>
+            <button class="btn btn-ghost btn-sm" id="clearAll" type="button">Wyczyść</button>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="col">
+            <div class="card">
+              <h2>Osoby</h2>
+              <div id="people" class="chips"></div>
+              <form id="personForm" class="row" autocomplete="off">
+                <input id="personName" placeholder="Dodaj osobę, np. Ania" maxlength="16" aria-label="Imię nowej osoby" />
+                <button class="btn btn-sm" type="submit">Dodaj</button>
+              </form>
+            </div>
+
+            <div class="card">
+              <h2>Nowy wydatek</h2>
+              <form id="expForm" class="exp-form" autocomplete="off">
+                <label class="f f-desc"><span>Za co</span><input id="expDesc" placeholder="np. Pizza" maxlength="40" /></label>
+                <label class="f f-amt"><span>Kwota</span><div class="amt"><input id="expAmt" inputmode="decimal" placeholder="0,00" /><em>zł</em></div></label>
+                <label class="f f-payer"><span>Kto zapłacił</span><select id="expPayer"></select></label>
+                <div class="f f-for"><span>Za kogo <button type="button" id="forAll" class="link">wszyscy</button></span><div id="expFor" class="chips chips-sm"></div></div>
+                <button class="btn f-add" type="submit">Dodaj wydatek</button>
+                <p id="formMsg" class="msg" role="status" aria-live="polite"></p>
+              </form>
+            </div>
+
+            <div class="card">
+              <h2>Wydatki <span id="expCount" class="count"></span></h2>
+              <ul id="expList" class="exp-list"></ul>
+            </div>
+          </div>
+
+          <aside class="col side">
+            <div class="card card-dark">
+              <div class="sum">
+                <div><small>Łącznie wydaliście</small><strong id="total">0,00 zł</strong></div>
+                <div><small>Średnio na osobę</small><strong id="avg" class="sm">0,00 zł</strong></div>
+              </div>
+              <h3>Bilans</h3>
+              <ul id="balances" class="bal"></ul>
+              <button id="settleBtn" class="btn btn-mint btn-block" type="button">Rozlicz się</button>
+            </div>
+
+            <div id="settleCard" class="card settle" hidden>
+              <h2>Kto komu oddaje</h2>
+              <p class="note" id="settleNote"></p>
+              <ul id="transfers" class="tr-list"></ul>
+              <button id="copyBtn" class="btn btn-ghost btn-block" type="button">Kopiuj podsumowanie na czat</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="jak" class="how">
+      <div class="wrap">
+        <p class="eyebrow">Jak to działa</p>
+        <h2 class="h2">Trzy kroki i po sprawie</h2>
+        <div class="steps">
+          <div class="step"><b>1</b><h3>Dodaj osoby</h3><p>Wpisz imiona wszystkich, którzy się składają.</p></div>
+          <div class="step"><b>2</b><h3>Dopisuj wydatki</h3><p>Kto zapłacił, ile i za kogo. Kwota dzieli się po równo.</p></div>
+          <div class="step"><b>3</b><h3>Kliknij „Rozlicz się”</h3><p>Dostajesz krótką listę przelewów i wysyłasz ją na grupowy czat.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <span>kwita<b>.</b> — projekt demonstracyjny</span>
+      <span>Dane zapisują się tylko w Twojej przeglądarce.</span>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
